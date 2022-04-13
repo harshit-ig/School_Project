@@ -199,7 +199,6 @@ def issue():
     passwd = input('Enter The Password: ')
     details = Studentinfo(user, passwd)
     print(details)
-    next_week = datetime.date.today() + datetime.timedelta(days=7)
     lst =[]
     name= details['Name']
     reg = details['Reg']
@@ -210,7 +209,81 @@ def issue():
         email = emailm
     else:
         email=emailf
-    #to be continued xd
+
+    while True:
+        bookname =''
+        bookid=''
+        availabledate =''
+        issuedate = datetime.date.today()
+        returndate= datetime.date.today() + datetime.timedelta(days=7)
+        availablestatus = 0
+        fine =0
+        bookdetails = input('Enter A Book Name Or ID: ')
+        db = open('db.csv', 'r')
+        database = csv.reader(db)
+        alreadyissued =False
+        numofissue =0
+        issuedb= open('issue.csv', 'r')
+        issuedatabase = csv.reader(issuedb)
+        for data in issuedatabase:
+            if len(data)==0:
+                continue
+            regno = data[0]
+            bookids=data[3]
+            booknames = data[4]
+            if reg in data:
+                numofissue += 1
+            if regno == reg and (bookids == bookdetails or booknames == bookdetails):
+                alreadyissued = True 
+                continue
+        if alreadyissued== True:
+            print('Book Already Issued!!')
+            break
+        if numofissue >= 2:
+            print('You Have Already Issued ', numofissue, ' Books, Please Return Those First.')
+            break
+        issuedb.close()
+        for data in database:
+            if len(data)==0:
+                continue
+            bkname = data[1]
+            bkid = data[0]
+            if bookdetails.lower() == bkname.lower() or bookdetails==bkid:
+                print('           The Following Book Is Available In The Database\n')
+                print('\n \n Book Name: ',data[1],'\n', 'Book ID: ', data[0], '\n', 'Remaining Books: ', int(data[2])-int(data[3]), '\n')
+                cnf = input('Press Enter To Confirm....')
+                if cnf =='':
+                    bookname = data[1]
+                    bookid= data[0]
+                    availablestatus = int(data[2])-int(data[3])
+                    availabledate = data[4]
+                    break
+                else:
+                    continue
+        if bookname=='':
+            print('Book Not Found!!!')
+            continue
+        pushtodb =[reg, name, email, bookid, bookname,issuedate, returndate]
+        db.close()
+        if availablestatus >0:
+            db = open('issue.csv', 'a')
+            database = csv.writer(db)
+            database.writerow(pushtodb)
+            db.close()
+            print('Book Issued!!!')
+        else:
+            print('Book Will Be Available On ', availabledate)
+
+
+        print('''
+        1.Issue Another Book.
+        2.Return To Main Menu.\n
+        ''')
+        usrcnf = input()
+        if usrcnf== '1':
+            continue
+        else:
+            break
 
 
 def returnbook():
