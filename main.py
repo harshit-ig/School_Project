@@ -1,10 +1,10 @@
 # pip install pandas 
 # pip install selenium
+from cv2 import contourArea
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import pandas
 import csv
-import time
 from datetime import date
 
 
@@ -24,6 +24,9 @@ baseUrl = "https://www.dpsggncampuscare.org"
 
 
 '''User Defined Functions Start'''
+def sendmail():
+    pass
+
 def display(csvfile):
     data = pandas.read_csv(csvfile)
     return data
@@ -92,7 +95,7 @@ def Studentinfo(username, passwords):
 def addabook():
     print('''
     1. Add A New Book.
-    2. Update Quantity.
+    2. Update Quantity.\n
     
     ''')
     usrchoice = input('Select An Option: ')
@@ -103,15 +106,20 @@ def addabook():
             bookid = int(input('Enter Book ID: '))
             bookidindb = False
             for data in database:
-                if bookid in data:
+                if len(data)==0:
+                    continue
+                if str(bookid) == data[0]:
                     bookidindb = True
             if bookidindb == True:
                 print('Book ID Already Present!!!')
                 continue
             bookname = input('Enter Book Name: ')
             booknameindb = False
+            db.seek(0)
             for data in database:
-                if bookname in data:
+                if len(data)==0:
+                    continue
+                if bookname == data[1]:
                     booknameindb = True
             if booknameindb == True:
                 print('Book Already In Database!!!')
@@ -159,7 +167,25 @@ def addabook():
         pass
     
 def removeabook():
-    pass
+    lst =[]
+    bookidorname = input('Enter Book ID or Book Name: ')
+    db = open('db.csv', 'r')
+    database = csv.reader(db)
+    for data in database:
+        if len(data)==0:
+            continue
+        bkname = data[1]
+        bkid = data[0]
+        if bookidorname.lower() == bkname.lower() or bookidorname==bkid:
+            print('Details Of The Book Removed\n')
+            print('\n \n Book Name: ',data[1],'\n', 'Book ID: ', data[0], '\n', 'Quantity: ', data[2], '\n')
+            continue
+        lst.append(data)
+    db.close()
+    db = open('db.csv', 'w')
+    database = csv.writer(db)
+    database.writerows(lst)
+    db.close()
 
 def viewbooks():
     print(display('db.csv'))
@@ -177,7 +203,7 @@ def returnbook():
     pass
 
 '''User Defined Functions End'''
-
+sendmail()
 while True:
     print('\n'*20)
     print(
@@ -201,7 +227,17 @@ while True:
     if int(userchoice) == 1:
         addabook()
     elif int(userchoice)==2:
-        removeabook()
+        while True:
+            removeabook()
+            userchoice=''
+            userchoice = input('''
+            1. Remove Another Book.
+            2. Return To Main Menu.
+            ''')
+            if userchoice.isnumeric() and int(userchoice)==1:
+                continue
+            else:
+                break
     elif int(userchoice)== 3:
         viewbooks()
     elif int(userchoice)== 4:
