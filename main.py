@@ -2,12 +2,10 @@
 # pip install selenium
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-import pandas 
-
-
-
-
-
+import pandas
+import csv
+import time
+from datetime import date
 
 
 option = webdriver.ChromeOptions()
@@ -17,26 +15,18 @@ driver = webdriver.Chrome(options=option)
 
 
 
-
-
-
-
 '''User Defined Variables Start'''
 
 baseUrl = "https://www.dpsggncampuscare.org"
+
 '''User Defined Variables End'''
 
 
 
-
-
-
-
 '''User Defined Functions Start'''
-def showtime(csvfile):
+def display(csvfile):
     data = pandas.read_csv(csvfile)
     return data
-
 
 def login(username, passwords):
     if type(passwords) is list:
@@ -100,13 +90,81 @@ def Studentinfo(username, passwords):
     return details
 
 def addabook():
-    pass
+    print('''
+    1. Add A New Book.
+    2. Update Quantity.
+    
+    ''')
+    usrchoice = input('Select An Option: ')
+    if usrchoice.isnumeric() and int(usrchoice) == 1:
+        while True:
+            db = open('db.csv')
+            database = csv.reader(db)
+            bookid = int(input('Enter Book ID: '))
+            bookidindb = False
+            for data in database:
+                if bookid in data:
+                    bookidindb = True
+            if bookidindb == True:
+                print('Book ID Already Present!!!')
+                continue
+            bookname = input('Enter Book Name: ')
+            booknameindb = False
+            for data in database:
+                if bookname in data:
+                    booknameindb = True
+            if booknameindb == True:
+                print('Book Already In Database!!!')
+                continue
+            quantity = int(input('Number of Books: '))
+            issuedbook = 0
+            today = date.today()
+            bookdata = [bookid, bookname, quantity, issuedbook, today,]
+            db.close()
+            db = open('db.csv', 'a')
+            database = csv.writer(db)
+            database.writerow(bookdata)
+            db.close()
+            usrchoice = ''
+            usrchoice = input('''
+            1. Add Another Book.
+            2. Return To Main Menu. '''
+            )
+            if int(usrchoice) == 1:
+                continue
+            break
+    elif usrchoice.isnumeric() and int(usrchoice) ==2:
+        lst =[]
+        bookidorname = input('Enter Book ID or Book Name: ')
+        db = open('db.csv', 'r')
+        database = csv.reader(db)
+        for data in database:
+            if len(data)==0:
+                continue
+            bkname = data[1]
+            bkid = data[0]
+            if bookidorname.lower() == bkname.lower() or bookidorname==bkid:
+                print('\n \n Book Name: ',data[1],'\n', 'Book ID: ', data[0], '\n', 'Quantity: ', data[2], '\n')
+                quantity = int(input('Enter Updated Quantity: '))
+                data[2]=quantity
+            lst.append(data)
+        db.close()
+        db = open('db.csv', 'w')
+        database = csv.writer(db)
+        database.writerows(lst)
+        db.close()
 
+
+    else:
+        pass
+    
 def removeabook():
     pass
 
 def viewbooks():
-    pass
+    print(display('db.csv'))
+    print()
+    wait = input('Press Enter to return to Main Menu...')
 
 def issue():
     user = input('Enter The Registration Number: ')
@@ -127,30 +185,29 @@ while True:
                     LIBRARY MANAGEMENT SYSTEM
 
 
-                        1. Add A New Book
+                        1. Add A Book
                         2. Remove A Old Book
                         3. View Book List
                         4. Issue Book To Student
                         5. Return Book
                         6. Exit
                     ''')
-
-    userchoice = int(input('Select An Option: '))
-    if userchoice == 1:
-        addabook()
-    elif userchoice==2:
-        removeabook()
-    elif userchoice== 3:
-        viewbooks()
-    elif userchoice== 4:
-        issue()
-    elif userchoice== 5:
-        returnbook()
-    elif userchoice== 6:
-        break
+    userchoice = input('Select An Option: ')
+    print('\n'*20)
+    if userchoice.isnumeric():
+        pass
     else:
-        print('Invalid Input!!')
-
-
-
-
+        continue
+    if int(userchoice) == 1:
+        addabook()
+    elif int(userchoice)==2:
+        removeabook()
+    elif int(userchoice)== 3:
+        viewbooks()
+    elif int(userchoice)== 4:
+        issue()
+    elif int(userchoice)== 5:
+        returnbook()
+    elif int(userchoice)== 6:
+        break
+    

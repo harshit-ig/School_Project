@@ -1,12 +1,3 @@
-a, b, cc
-aaaa,cccc,vvgaklj.
-a,c,cc
-a, b, cc
-aaaa,cccc,vvgaklj.
-a,c,cc
-a, b, cc
-aaaa,cccc,vvgaklj.
-a,c,cc
-a, b, cc
-aaaa,cccc,vvgaklj.
-a,c,cc
+Book ID, Book Name, Quantity, Issued Books, Available On
+1,1st,2,0,2022-04-13
+2,2nd,2,0,2022-04-13
