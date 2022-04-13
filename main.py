@@ -1,11 +1,11 @@
 # pip install pandas 
 # pip install selenium
-from cv2 import contourArea
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import pandas
 import csv
-from datetime import date
+import datetime
+import time
 
 
 option = webdriver.ChromeOptions()
@@ -73,6 +73,7 @@ def login(username, passwords):
 def Studentinfo(username, passwords):
     details = {}
     login(username ,passwords)
+    time.sleep(1)
     personal = driver.find_element(By.XPATH,'//*[@id="side-menu"]/li[3]/a/span[1]')
     personal.click()
     myprofile = driver.find_element(By.XPATH,'//*[@id="side-menu"]/li[3]/ul/li[1]/a')
@@ -126,7 +127,7 @@ def addabook():
                 continue
             quantity = int(input('Number of Books: '))
             issuedbook = 0
-            today = date.today()
+            today = datetime.date.today()
             bookdata = [bookid, bookname, quantity, issuedbook, today,]
             db.close()
             db = open('db.csv', 'a')
@@ -194,10 +195,23 @@ def viewbooks():
 
 def issue():
     user = input('Enter The Registration Number: ')
-    user = 'p'+ user
+    user = 'P'+ user
     passwd = input('Enter The Password: ')
     details = Studentinfo(user, passwd)
     print(details)
+    next_week = datetime.date.today() + datetime.timedelta(days=7)
+    lst =[]
+    name= details['Name']
+    reg = details['Reg']
+    email = ''
+    emailf = details['FEmail']
+    emailm= details['MEmail']
+    if len(emailf) ==0:
+        email = emailm
+    else:
+        email=emailf
+    #to be continued xd
+
 
 def returnbook():
     pass

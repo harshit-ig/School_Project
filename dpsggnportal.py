@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+import time
 
 option = webdriver.ChromeOptions()
 option.add_argument('--headless')#Hides the web browser 
@@ -57,6 +58,7 @@ def Studentinfo(username, passwords):
 
     details = {}
     login(username ,passwords)
+    time.sleep(1)
     personal = driver.find_element(By.XPATH,'//*[@id="side-menu"]/li[3]/a/span[1]')
     personal.click()
     myprofile = driver.find_element(By.XPATH,'//*[@id="side-menu"]/li[3]/ul/li[1]/a')
