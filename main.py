@@ -1,9 +1,24 @@
+# pip install pandas 
+# pip install selenium
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+import pandas 
+
+
+
+
+
+
 
 option = webdriver.ChromeOptions()
 option.add_argument('--headless')#Hides the web browser 
 driver = webdriver.Chrome(options=option)
+
+
+
+
+
+
 
 
 '''User Defined Variables Start'''
@@ -11,7 +26,18 @@ driver = webdriver.Chrome(options=option)
 baseUrl = "https://www.dpsggncampuscare.org"
 '''User Defined Variables End'''
 
+
+
+
+
+
+
 '''User Defined Functions Start'''
+def showtime(csvfile):
+    data = pandas.read_csv(csvfile)
+    return data
+
+
 def login(username, passwords):
     if type(passwords) is list:
         driver.get(baseUrl)
@@ -50,11 +76,8 @@ def login(username, passwords):
         passfld.send_keys(passwords)
         passnext = driver.find_element(By.XPATH,'//*[@id="btnLogin"]')
         passnext.click()
+
 def Studentinfo(username, passwords):
-
-
-
-
     details = {}
     login(username ,passwords)
     personal = driver.find_element(By.XPATH,'//*[@id="side-menu"]/li[3]/a/span[1]')
@@ -76,5 +99,58 @@ def Studentinfo(username, passwords):
     details['MEmail']= memailtxt
     return details
 
+def addabook():
+    pass
+
+def removeabook():
+    pass
+
+def viewbooks():
+    pass
+
+def issue():
+    user = input('Enter The Registration Number: ')
+    user = 'p'+ user
+    passwd = input('Enter The Password: ')
+    details = Studentinfo(user, passwd)
+    print(details)
+
+def returnbook():
+    pass
 
 '''User Defined Functions End'''
+
+while True:
+    print('\n'*20)
+    print(
+    '''
+                    LIBRARY MANAGEMENT SYSTEM
+
+
+                        1. Add A New Book
+                        2. Remove A Old Book
+                        3. View Book List
+                        4. Issue Book To Student
+                        5. Return Book
+                        6. Exit
+                    ''')
+
+    userchoice = int(input('Select An Option: '))
+    if userchoice == 1:
+        addabook()
+    elif userchoice==2:
+        removeabook()
+    elif userchoice== 3:
+        viewbooks()
+    elif userchoice== 4:
+        issue()
+    elif userchoice== 5:
+        returnbook()
+    elif userchoice== 6:
+        break
+    else:
+        print('Invalid Input!!')
+
+
+
+
