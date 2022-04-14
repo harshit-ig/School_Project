@@ -24,6 +24,9 @@ baseUrl = "https://www.dpsggncampuscare.org"
 
 
 '''User Defined Functions Start'''
+def updatedateonmaindb():
+    pass
+
 def sendmail():
     pass
 
@@ -199,7 +202,6 @@ def issue():
     passwd = input('Enter The Password: ')
     details = Studentinfo(user, passwd)
     print(details)
-    lst =[]
     name= details['Name']
     reg = details['Reg']
     email = ''
@@ -238,9 +240,11 @@ def issue():
                 continue
         if alreadyissued== True:
             print('Book Already Issued!!')
+            wait = input('Press Enter To Return To Main Menu...')
             break
         if numofissue >= 2:
             print('You Have Already Issued ', numofissue, ' Books, Please Return Those First.')
+            wait = input('Press Enter To Return To Main Menu...')
             break
         issuedb.close()
         for data in database:
@@ -263,13 +267,47 @@ def issue():
         if bookname=='':
             print('Book Not Found!!!')
             continue
-        pushtodb =[reg, name, email, bookid, bookname,issuedate, returndate]
+        pushtodb =[reg, name, email, bookid, bookname,issuedate, returndate, fine]
         db.close()
         if availablestatus >0:
             db = open('issue.csv', 'a')
             database = csv.writer(db)
             database.writerow(pushtodb)
             db.close()
+            db = open('issue.csv')
+            database =csv.reader(db)
+
+            maindb = open('db.csv', 'r')
+            maindata= csv.reader(maindb)
+            list1 = []
+            for bkrcd in maindata:
+                if len(bkrcd)==0:
+                    continue
+                if bookid == bkrcd[0]:
+                    bkrcd[3] = int(bkrcd[3])+1
+                    if bkrcd[2]==bkrcd[3]:
+                        lst=[]
+
+                        for data in database:
+                            if len(data)==0:
+                                continue
+                            if data[3]== str(bookid):
+                                lst.append(data)
+                        for records in lst:
+                            tempdate = records[6]
+                            newdate1 = time.strptime(tempdate, "%Y-%m-%d")
+                            newdate2 = time.strptime(returndate, "%Y-%m-%d")
+                            if newdate2 > newdate1 or newdate1 == newdate2:
+                                returndate = tempdate
+                        bkrcd[4]= returndate
+                list1.append(bkrcd)
+            db.close()
+            maindb.close()
+            db =open('db.csv', 'w')
+            database =csv.writer(db)
+            database.writerows(list1)
+            db.close()
+
             print('Book Issued!!!')
         else:
             print('Book Will Be Available On ', availabledate)
@@ -285,12 +323,12 @@ def issue():
         else:
             break
 
-
 def returnbook():
     pass
 
 '''User Defined Functions End'''
 sendmail()
+updatedateonmaindb()
 while True:
     print('\n'*20)
     print(
